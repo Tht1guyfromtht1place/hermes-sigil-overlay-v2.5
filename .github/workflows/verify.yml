@@ -25,7 +25,7 @@ jobs:
       - run: npm run audit:release
       - run: npm audit
       - name: Build Windows installer
-        run: npx electron-builder --win nsis
+        run: npx electron-builder --win nsis --publish never
       - run: npm run audit:artifacts
       - uses: actions/upload-artifact@v4
         with:
