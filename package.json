@@ -1,0 +1,52 @@
+{
+  "name": "hermes-sigil-overlay",
+  "version": "2.5.0",
+  "private": false,
+  "description": "A privacy-conscious animated activity overlay for Hermes Desktop",
+  "author": "Tht1guyFromtht1place",
+  "license": "MIT",
+  "main": "src/main.js",
+  "scripts": {
+    "start": "electron .",
+    "dev": "electron .",
+    "test": "node --test test/*.test.js",
+    "check": "node --check src/main.js && node --check src/preload.js && node --check src/renderer.js && node --check src/bridge-security.js && node --check src/bridge-server.js && node --check src/plugin-installer.js && node --check hermes-bridge/plugin.js",
+    "audit:release": "node scripts/release-audit.js .",
+    "audit:artifacts": "node scripts/audit-artifacts.js dist",
+    "pack:win": "npm test && npm run check && npm run audit:release && electron-builder --win nsis && npm run audit:artifacts"
+  },
+  "devDependencies": {
+    "electron": "43.4.0",
+    "electron-builder": "26.15.3"
+  },
+  "build": {
+    "appId": "com.hermes.sigil.overlay",
+    "productName": "Hermes Sigil Overlay",
+    "asar": true,
+    "files": [
+      "src/**/*",
+      "assets/**/*",
+      "package.json"
+    ],
+    "extraResources": [
+      {
+        "from": "hermes-bridge/plugin.js",
+        "to": "hermes-bridge/plugin.js"
+      }
+    ],
+    "win": {
+      "target": ["nsis"],
+      "icon": "assets/hermes-sigil.ico"
+    },
+    "nsis": {
+      "include": "build/installer.nsh",
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "deleteAppDataOnUninstall": true,
+      "shortcutName": "Hermes Sigil Overlay",
+      "artifactName": "Hermes-Sigil-Overlay-Setup-${version}.${ext}"
+    }
+  }
+}

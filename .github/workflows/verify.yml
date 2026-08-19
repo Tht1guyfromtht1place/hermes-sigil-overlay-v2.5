@@ -1,0 +1,34 @@
+name: Verify public release
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify-windows:
+    runs-on: windows-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci
+      - run: npm test
+      - run: npm run check
+      - run: npm run audit:release
+      - run: npm audit
+      - name: Build Windows installer
+        run: npx electron-builder --win nsis
+      - run: npm run audit:artifacts
+      - uses: actions/upload-artifact@v4
+        with:
+          name: hermes-sigil-windows-installer
+          path: dist/Hermes-Sigil-Overlay-Setup-*.exe
+          if-no-files-found: error

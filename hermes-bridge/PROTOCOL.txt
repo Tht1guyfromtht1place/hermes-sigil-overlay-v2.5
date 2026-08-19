@@ -1,0 +1,41 @@
+HERMES SIGIL LOCAL ACTIVITY PROTOCOL
+====================================
+
+Version: hermes-sigil/2
+Transport: authenticated HTTP POST to http://127.0.0.1:8765/event
+Scope: local visual activity only
+Maximum request body: 16384 bytes
+
+PAIRING
+-------
+The overlay generates a random local token on first launch and renders it into
+the plugin copy installed on that user's machine. The source template contains
+only the placeholder __HERMES_SIGIL_AUTH_TOKEN__. The token is not a Hermes,
+GitHub, model-provider, or API credential.
+
+ACCEPTED FIELDS
+---------------
+auth_token           Per-install local pairing token; consumed, never rendered
+protocol             Must equal hermes-sigil/2
+session_active       Boolean only; no session identifier
+nodes                Fixed normalized activity-node vocabulary
+status               idle, working, complete, waiting, or error
+error_node           Fixed normalized node when known
+
+FIXED NODE VOCABULARY
+---------------------
+think, reason, vision, web, search, read, network, execute, tools, create,
+cloud, voice, respond, image, video, data, security, device, monitor, power
+
+NEVER TRANSMITTED
+-----------------
+Raw session IDs; raw/custom tool names; prompts or answers; reasoning content;
+message text; file names, paths, or contents; tool arguments or results;
+terminal input or output; webpage URLs or contents; credentials; environment
+variables; stack traces; or full error text.
+
+RECEIVER BEHAVIOR
+-----------------
+The receiver authenticates the local token, validates the protocol and status,
+allowlists all nodes, and constructs a new safe object. Unknown fields are
+discarded before renderer delivery.
