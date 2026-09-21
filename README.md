@@ -16,7 +16,10 @@ No Node.js, developer tools, API keys, or model credentials are needed when inst
 ## Install
 
 1. Install and open Hermes Desktop at least once.
-2. Download **`Hermes-Sigil-Overlay-Setup-2.5.0.exe`** from this repository's [Releases](../../releases/latest) page.
+2. Download **`Hermes-Sigil-Overlay-Setup-2.5.0.exe`** from this repository's [Releases](../../releases/latest) page. It is the universal Windows installer and includes 64-bit Intel/AMD, Windows ARM64, and 32-bit builds. Architecture-specific installers are also published for smaller downloads:
+   - `Hermes-Sigil-Overlay-Setup-2.5.0-x64.exe` for 64-bit Intel/AMD Windows
+   - `Hermes-Sigil-Overlay-Setup-2.5.0-arm64.exe` for Windows on ARM
+   - `Hermes-Sigil-Overlay-Setup-2.5.0-ia32.exe` for 32-bit Windows
 3. Run the installer and launch **Hermes Sigil Overlay**.
 4. The overlay automatically installs its small activity bridge into the default Hermes Desktop profile and any named profiles already present.
 5. Hermes Desktop normally hot-loads the bridge within a few seconds. If its status bar still shows `sigil o`, open the Hermes command palette and run **Reload desktop plugins**.
