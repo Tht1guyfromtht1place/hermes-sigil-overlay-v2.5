@@ -24,11 +24,10 @@ jobs:
       - run: npm run check
       - run: npm run audit:release
       - run: npm audit
-      - name: Build Windows installer
-        run: npx electron-builder --win nsis --publish never
-      - run: npm run audit:artifacts
+      - name: Build Windows installers (x64, ARM64, and 32-bit)
+        run: npm run pack:win
       - uses: actions/upload-artifact@v4
         with:
-          name: hermes-sigil-windows-installer
+          name: hermes-sigil-windows-installers
           path: dist/Hermes-Sigil-Overlay-Setup-*.exe
           if-no-files-found: error

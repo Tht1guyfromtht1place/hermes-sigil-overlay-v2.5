@@ -34,7 +34,7 @@ test('discovers default and named-profile Hermes homes without personal paths in
       ];
     }
   };
-  assert.deepEqual(discoverHermesHomes({ LOCALAPPDATA: local }, fakeFs), [
+  assert.deepEqual(discoverHermesHomes({ LOCALAPPDATA: local }, fakeFs, 'win32'), [
     path.join(local, 'hermes'),
     path.join(local, 'hermes', 'profiles', 'work')
   ]);
@@ -43,6 +43,22 @@ test('discovers default and named-profile Hermes homes without personal paths in
 test('explicit HERMES_HOME installs only into that isolated profile', () => {
   const fakeFs = { existsSync: () => false, readdirSync: () => [] };
   assert.deepEqual(discoverHermesHomes({ HERMES_HOME: 'D:/Hermes/ProfileA', LOCALAPPDATA: 'C:/Local' }, fakeFs), [path.normalize('D:/Hermes/ProfileA')]);
+});
+
+test('discovers the desktop Hermes home on macOS and Linux', () => {
+  const home = path.join(path.sep, 'Users', 'Example');
+  const fakeFs = {
+    existsSync: () => false,
+    readdirSync: () => []
+  };
+  assert.deepEqual(
+    discoverHermesHomes({ HOME: home }, fakeFs, 'darwin'),
+    [path.join(home, 'Library', 'Application Support', 'hermes'), path.join(home, '.hermes')]
+  );
+  assert.deepEqual(
+    discoverHermesHomes({ HOME: home, XDG_CONFIG_HOME: path.join(home, '.config') }, fakeFs, 'linux'),
+    [path.join(home, '.config', 'hermes'), path.join(home, '.hermes')]
+  );
 });
 
 test('installs a paired plugin atomically and removes it cleanly', () => {

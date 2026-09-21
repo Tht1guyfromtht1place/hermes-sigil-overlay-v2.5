@@ -4,16 +4,25 @@ const path = require('node:path');
 const PLUGIN_TOKEN_PLACEHOLDER = '__HERMES_SIGIL_AUTH_TOKEN__';
 const PLUGIN_ID = 'hermes-sigil-bridge';
 
-function discoverHermesHomes(env = process.env, fileSystem = fs) {
+function discoverHermesHomes(env = process.env, fileSystem = fs, platform = process.platform) {
   if (env.HERMES_HOME) return [path.normalize(env.HERMES_HOME)];
-  if (!env.LOCALAPPDATA) return [];
 
-  const base = path.join(env.LOCALAPPDATA, 'hermes');
-  const homes = [base];
-  const profiles = path.join(base, 'profiles');
-  if (fileSystem.existsSync(profiles)) {
-    for (const entry of fileSystem.readdirSync(profiles, { withFileTypes: true })) {
-      if (entry.isDirectory()) homes.push(path.join(profiles, entry.name));
+  const home = env.HOME || env.USERPROFILE;
+  const configHome = env.XDG_CONFIG_HOME || (home && path.join(home, '.config'));
+  const bases = platform === 'win32'
+    ? (env.LOCALAPPDATA ? [path.join(env.LOCALAPPDATA, 'hermes')] : [])
+    : platform === 'darwin'
+      ? (home ? [path.join(home, 'Library', 'Application Support', 'hermes'), path.join(home, '.hermes')] : [])
+      : (configHome && home ? [path.join(configHome, 'hermes'), path.join(home, '.hermes')] : []);
+
+  const homes = [];
+  for (const base of [...new Set(bases.map(value => path.normalize(value)))]) {
+    homes.push(base);
+    const profiles = path.join(base, 'profiles');
+    if (fileSystem.existsSync(profiles)) {
+      for (const entry of fileSystem.readdirSync(profiles, { withFileTypes: true })) {
+        if (entry.isDirectory()) homes.push(path.join(profiles, entry.name));
+      }
     }
   }
   return homes;

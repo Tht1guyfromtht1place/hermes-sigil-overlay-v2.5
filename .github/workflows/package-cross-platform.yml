@@ -1,0 +1,49 @@
+name: Package macOS and Linux installers
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  package-macos:
+    runs-on: macos-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci
+      - run: npm run pack:mac
+      - uses: actions/upload-artifact@v4
+        with:
+          name: hermes-sigil-macos-installers
+          path: |
+            dist/*.dmg
+            dist/*.zip
+          if-no-files-found: error
+
+  package-linux:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci
+      - run: npm run pack:linux
+      - uses: actions/upload-artifact@v4
+        with:
+          name: hermes-sigil-linux-installers
+          path: |
+            dist/*.AppImage
+            dist/*.deb
+          if-no-files-found: error
