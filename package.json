@@ -16,7 +16,7 @@
     "pack:win": "npm test && npm run check && npm run audit:release && electron-builder --win nsis --publish never && npm run audit:artifacts"
   },
   "devDependencies": {
-    "electron": "43.4.0",
+    "electron": "43.5.0",
     "electron-builder": "26.15.3"
   },
   "build": {
